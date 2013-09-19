@@ -1,0 +1,5 @@
+#!/bin/sh
+
+
+pacat --playback --rate=4000 --format=u8 "$1"
+

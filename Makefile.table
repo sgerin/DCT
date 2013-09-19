@@ -1,0 +1,3 @@
+
+nb_bits_utile pow2 prend_bit pose_bit open_bitstream close_bitstream put_bit get_bit put_bits get_bits put_bit_string put_entier get_entier put_entier_signe get_entier_signe open_shannon_fano close_shannon_fano put_entier_shannon_fano get_entier_shannon_fano allocation_matrice_carree_float liberation_matrice_carree_float coef_dct dct psycho compresse decompresse lire_ligne allocation_image liberation_image lecture_image ecriture_image dct_image quantification zigzag ondelette_1d ondelette_2d ondelette_1d_inverse ondelette_2d_inverse : tests
+	./tests $@

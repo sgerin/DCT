@@ -1,0 +1,38 @@
+#!/bin/sh
+
+echo >tests_proto.h
+echo >tests_table.h
+echo >Makefile.table
+
+for X in $*
+do
+  POINT_H=`echo "$X" | sed 's/.o$/.h/'`
+  POINT_C=`echo "$X" | sed 's/.o$/.c/'`
+  TST_POINT_C=`echo "$X" | sed 's/.o$/_tst.c/'`
+  LES_PROTOTYPES=`grep ") *;\$" <"$POINT_H"`
+  LES_FONCTIONS=`echo "$LES_PROTOTYPES" | sed -e 's/(.*//' -e 's/.* \**//'`
+
+  if [ -f "$TST_POINT_C" ]
+  then
+    echo "$LES_FONCTIONS" |
+    while read F
+    do
+      if fgrep -c "$F" "$TST_POINT_C" >/dev/null
+      then
+	echo "{ \"$F\", ${F}_tst }," >>tests_table.h
+	echo "void ${F}_tst() ;" >>tests_proto.h
+	else
+	  echo  "{ \"$F\", NULL }," >>tests_table.h
+      fi
+      echo -n "$F " >>Makefile.table
+    done
+  fi
+done
+
+echo ": tests
+	./tests \$@" >>Makefile.table
+
+ 
+
+
+

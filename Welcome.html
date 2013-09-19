@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>TP de transmission/compression de sons et images</title>
+    <LINK REL="stylesheet" HREF="/~exco/COURS/COURS/tp.css">
+  </head>
+
+  <body>
+    <h1>TP de transmission/compression de sons et images</h1>
+    <p>
+      Recopiez l'environnement de travail chez vous en ex&eacute;cutant :
+    <PRE>
+cp -a /home/tpetu/INF2033M/TP_DCT .</PRE>
+<P>
+    Le but des TP est de programmer un compresseur/d&eacute;compresseur
+    de sons et d'images. Vous ne programmerez que
+    les parties int&eacute;ressantes.
+    <P>
+      De plus chacune des fonctions que vous &eacute;crivez sera test&eacute;es
+      automatiquement afin de vous pr&eacute;venir pour les erreurs les plus
+      courantes.
+    <P>
+      Les fichiers que vous devez compl&eacute;ter (par 579 lignes de C) sont dans l'ordre :
+    <PRE>
+<A HREF="bit.c">bit.c</A> <A HREF="bitstream.c">bitstream.c</A> <A HREF="bits.c">bits.c</A> <A HREF="entier.c">entier.c</A> <A HREF="sf.c">sf.c</A> <A HREF="matrice.c">matrice.c</A> <A HREF="dct.c">dct.c</A> <A HREF="psycho.c">psycho.c</A> <A HREF="rle.c">rle.c</A> <A HREF="image.c">image.c</A> <A HREF="jpg.c">jpg.c</A> <A HREF="ondelette.c">ondelette.c</A></PRE>
+    <P>
+      Je vous conseille de regarder les macros de <TT><A HREF="bases.h">bases.h</A></TT> elles sont bien utiles.
+    <P>
+    <B>En aucun cas vous ne devez faire de <TT>printf</TT> sur la
+	sortie standard.</B> Vous devez faire vos sorties
+	pour le debuggage sur la sortie d'erreur&nbsp;:
+	<TT>fprintf( stderr, ...)</TT> 
+    <P>
+      Des fonctions C (1736 lignes) v&eacute;rifiant si vos fonctions
+      ont l'air de fonctionner existent.
+    Pour tester l'ensemble de vos fonctions, vous tapez :
+    <pre>
+make</pre>
+    <P>
+      Vous pouvez lancer le test imm&eacute;diatement apr&egrave;s avoir
+      fini une fonction.
+      La fonction qui teste la fonction <TT>toto</TT> du fichier
+      <TT>truc.c</TT> s'apelle <TT>toto_tst</TT> et se trouve dans
+      le fichier <TT>truc_tst.c</TT>.
+    <P>
+      Pour tester &agrave; partir d'une fonction sans tester les
+      pr&eacute;c&eacute;dentes, vous tapez :
+    <pre>
+make nom_de_la_fonction</pre>
+    <P>
+      Quand vous aurez fait <TT>dct.c</TT>, vous pourrez commencer
+      &agrave; cr&eacute;er une page Web avec quelques graphismes et
+      statistiques pour le son, ou pour l'image quand vous aurez
+      termin&eacute; <TT>jpeg.c</TT> ou <TT>ondelette.c</TT>.
+      Les scripts suivants g&eacute;n&egrave;rent des pages Web&nbsp;:
+    <pre>
+<A HREF="page_son">page_son</A><BR>
+<A HREF="page_jpeg">page_jpeg</A><BR>
+<A HREF="page_ondelette">page_ondelette</A></pre>
+    <P>
+      Ces deux programmes sont des scripts shell facilement
+      param&eacute;trables pour que vous puissiez tester tous les
+      param&egrave;tres des diff&eacute;rents algorithmes.
+    <P>
+      Les diff&eacute;rentes &eacute;tapes de transformation des sons et images
+      sont faites en utilisant des filtres qui sont compos&eacute;s
+      avec des pipes.
+<PRE>
+export NBE=128    # Taille lin&eacute;aire de la DCT<BR>
+export QUALITE=1  # Qualit&eacute; de "psycho" ou "quantification"<BR>
+export SHANNON=0  # Si 1, utilise shannon-fano dynamique au lieu de table statiques</PRE>
+    
+    <P>
+      Les filtres proposés sont :
+      <TABLE BORDER>
+	<TR>
+	  <TH>Nom du filtre<TH>Entrée Standard<TH>Sortie Standard
+		<TH>Paramètres
+	</TR>
+	<TR>
+	  <TH>affiche_son<TD>Son (octets)<TD>Rien (fenêtre sur l'écran)<TD>NBE
+	</TR>
+	<TR>
+	  <TH>dct<TD>Son (octets)<TD>Dct (flottant)<TD>NBE
+	</TR>
+	<TR>
+	  <TH>dctinv<TD>Dct (flottant)<TD>Son<TD>NBE
+	</TR>
+	<TR>
+	  <TH>affiche_dct<TD>Dct (flottant)<TD>Rien (fenêtre sur l'écran)<TD>NBE
+	</TR>
+	<TR>
+	  <TH>psycho<TD>Dct (flottant)<TD>Dct (flottant)<TD>NBE, QUALITE
+	</TR>
+	<TR>
+	  <TH>rle<TD>Dct image ou non (flottant)<TD>Bits<TD>NBE, SHANNON
+	</TR>
+	<TR>
+	  <TH>rleinv<TD>Bits<TD>Dct image ou non (flottant)<TD>NBE, SHANNON
+	</TR>
+	<TR>
+	  <TH>imagedct<TD>PGM<TD>Dct image (flottant)<TD>NBE
+	</TR>
+	<TR>
+	  <TH>imagedctinv<TD>Dct image (flottant)<TD>PGM<TD>NBE
+	</TR>
+	<TR>
+	  <TH>quantif<TD>Dct image (flottant)<TD>Dct image (flottant)<TD>NBE, QUALITE
+	</TR>
+	<TR>
+	  <TH>quantifinv<TD>Dct image (flottant)<TD>Dct image (flottant)<TD>NBE, QUALITE
+	</TR>
+	<TR>
+	  <TH>zigzag<TD>Dct image (flottant)<TD>Dct image (flottant)<TD>NBE
+	</TR>
+	<TR>
+	  <TH>zigzaginv<TD>Dct image (flottant)<TD>Dct image (flottant)<TD>NBE
+	</TR>
+	<TR>
+	  <TH>ondelette<TD>PGM<TD>Bits<TD>QUALITE, SHANNON
+	</TR>
+	<TR>
+	  <TH>ondeletteinv<TD>Bits<TD>PGM
+	</TR>
+	<TR>
+	  <TH>sf8<TD>Octet<TD>Egalisation Bit Shannon Fano
+	</TR>
+	<TR>
+	  <TH>sf16<TD>Pair octet<TD>Egalisation Bit Shannon Fano
+	</TR>
+	</TABLE
+			  
+
+    <hr>
+    <address><a href="mailto:exco@ligim.univ-lyon1.fr">Thierry EXCOFFIER</a></address>
+<!-- Created: Fri Feb 15 22:35:53 CET 2002 -->
+<!-- hhmts start -->
+Last modified: Thu Sep 23 13:10:17 CEST 2010
+<!-- hhmts end -->
+  </body>
+</html>
