@@ -94,6 +94,5 @@ unsigned long pose_bit(unsigned long c,	      /* Entier à modifier */
 	else
 		return c | (1 << position);
 
-
 //return 0 ; /* pour enlever un warning du compilateur */
 }
