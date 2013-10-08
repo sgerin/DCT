@@ -49,12 +49,13 @@ unsigned int nb_bits_utile(unsigned long v)
 
 unsigned long pow2(Position_Bit position)
 {
+	return 1uL << position;
 	//unsigned int value;
-	if(position)
+	/*if(position)
 		return pow2(position-1)*2; 
 	else
 		return 1;
-	
+	*/
 
 
 
@@ -74,7 +75,7 @@ Booleen prend_bit(unsigned long c,	     /* L'entier où on prend le bit */
 		  Position_Bit position	     /* La position du bit pris */
 		  )
 {
-	return (c & (1 << position)) ? Vrai : Faux;
+	return (c & (pow2(position))) ? Vrai : Faux;
 //return 0 ; /* pour enlever un warning du compilateur */
 }
 
@@ -90,9 +91,9 @@ unsigned long pose_bit(unsigned long c,	      /* Entier à modifier */
 		       )
 {
 	if(bit == Faux)
-		return c & ~(1 << position);
+		return c & ~(pow2(position));
 	else
-		return c | (1 << position);
+		return c | (pow2(position));
 
 //return 0 ; /* pour enlever un warning du compilateur */
 }

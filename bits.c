@@ -10,9 +10,18 @@
 
 void put_bits(struct bitstream *b, unsigned int nb, unsigned long v)
 {
-
-
-
+	if(b != NULL)
+	{
+		unsigned int i; 
+		//nb_bits_utile
+		//unsigned int nb_bits_utile(unsigned long v)
+		for(i=nb-1; i>=0; --i)
+		{
+			put_bit(b, prend_bit(v, i));
+		}
+	}
+		//put_bit
+		//	prend_bit
 
 }
 

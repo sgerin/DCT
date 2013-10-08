@@ -1,6 +1,7 @@
 #include "bitstream.h"
 #include "exception.h"
 
+
 /*
  * Le but de ce fichier est de fournir des fonctions permettant
  * d'écrire/lire un flot de bit, bit par bit dans ou à partir d'un fichier.
@@ -76,7 +77,7 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 	{
 			bs->fichier = fopen(fichier, mode);
 			if(bs->fichier == NULL)
-				EXCEPTION_LANCE(1);
+				EXCEPTION_LANCE(Exception_fichier_ouverture);
 			if(strcmp(mode, "r") == 0 || strcmp(mode, "r+") == 0)
 				bs->ecriture = Faux;
 			else
@@ -113,11 +114,12 @@ void flush_bitstream(struct bitstream *b)
 	{
 		if(b->ecriture == Vrai)
 		{
-			if(b->nb_bits_dans_buffer != 0)
+			if(b->nb_bits_dans_buffer > 0)
 			{
 				//b->buffer = 0;
-				if(fprintf(b->fichier, "%hhu", b->buffer) < 0)
-					EXCEPTION_LANCE(2);
+				//printf("%d\n", b->buffer);
+				if(fputc(b->buffer, b->fichier) != b->buffer)
+					EXCEPTION_LANCE(Exception_fichier_ecriture);
 				b->nb_bits_dans_buffer = 0;
 				b->buffer = 0;
 			}
@@ -142,13 +144,15 @@ void close_bitstream(struct bitstream *b)
 	{
 		//if(b->nb_bits_dans_buffer != 0)
 		//{
+		//if(b->nb_bits_dans_buffer > 0)
+			//printf("8");
 		flush_bitstream(b);
 			//if(fprintf(b->fichier, "%hhx", b->buffer) < 0)
 			//	EXCEPTION_LANCE(2);
 			//b->nb_bits_dans_buffer = 0;
 		//}
 		if(fclose(b->fichier) != 0)
-			EXCEPTION_LANCE(4);
+			EXCEPTION_LANCE(Exception_fichier_fermeture);
 		free(b);
 		b = NULL;
 	}
@@ -178,22 +182,24 @@ void put_bit(struct bitstream *b, Booleen bit)
 		if(b->ecriture == Vrai)
 		{
 			if(b->nb_bits_dans_buffer == NB_BITS)
-			{
 				flush_bitstream(b);
-				b->nb_bits_dans_buffer++;
-				pose_bit(b->buffer, NB_BITS-1, bit);
-			}
-			else
-			{
+			//{
+				//printf("%lu\n", NB_BITS);
+				//pose_bit(b->buffer, NB_BITS-1, bit);
+				//b->nb_bits_dans_buffer++;
+				//}
+			//else
+			//{
+				//printf("%lu\n", b->nb_bits_dans_buffer);
 				//printf("before %hhu %i %hhu\n", b->buffer, bit,  NB_BITS-1-b->nb_bits_dans_buffer);
 				//printf("result %hhu\n", pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit));
-				b->buffer = (unsigned char)pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit);
+				b->buffer = pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit);
 				b->nb_bits_dans_buffer++;
 				//printf("after %hhu %i %hhu\n", b->buffer, bit,  NB_BITS-1-b->nb_bits_dans_buffer);
-			}
+				//}
 		}
 		else
-			EXCEPTION_LANCE(5);
+			EXCEPTION_LANCE(Exception_fichier_ecriture_dans_fichier_ouvert_en_lecture);
 	}
 }
 
@@ -223,20 +229,29 @@ void put_bit(struct bitstream *b, Booleen bit)
 
 Booleen get_bit(struct bitstream *b)
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-return 0 ; /* pour enlever un warning du compilateur */
+	if(b != NULL)
+	{
+		if(b->ecriture == Faux)
+		{
+			if(b->nb_bits_dans_buffer == 0)
+			{
+				int read_byte = fgetc(b->fichier);
+				if(read_byte == EOF)
+					EXCEPTION_LANCE(Exception_fichier_lecture);
+				b->buffer = read_byte;
+				b->nb_bits_dans_buffer = NB_BITS;
+				//else
+				//	return prend_bit(read_byte,)
+			}
+			--b->nb_bits_dans_buffer;
+			return prend_bit(b->buffer, b->nb_bits_dans_buffer);
+		}
+		else	
+		{
+			EXCEPTION_LANCE(Exception_fichier_lecture_dans_fichier_ouvert_en_ecriture);
+		}
+	}	
+	return 0 ; /* pour enlever un warning du compilateur */
 }
 
 /*
