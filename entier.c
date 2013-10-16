@@ -41,8 +41,20 @@ static char *prefixes[] = { "00", "010", "011", "1000", "1001", "1010", "1011",
 
 void put_entier(struct bitstream *b, unsigned int f)
 {
-
-
+	unsigned int nb_utile = nb_bits_utile(f);
+	//eprintf("%d", nb_utile);
+	if(nb_utile > 15)
+	{
+		exit(1);
+	}
+	else	
+	{
+		//char* prefix = ;
+		put_bit_string(b, prefixes[nb_utile]);
+		if(f > 1)
+			put_bits(b, nb_utile-1, f);
+	}
+	
 
 
 
@@ -66,7 +78,7 @@ void put_entier(struct bitstream *b, unsigned int f)
 unsigned int get_entier(struct bitstream *b)
 {
 
-
+    
 
 
 
