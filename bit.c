@@ -90,10 +90,12 @@ unsigned long pose_bit(unsigned long c,	      /* Entier à modifier */
 		       Booleen      bit	      /* Nouvelle valeur du bit */
 		       )
 {
-	if(bit == Faux)
-		return c & ~(pow2(position));
-	else
-		return c | (pow2(position));
+
+return (bit == Faux) ? c & ~(pow2(position)) : c | (pow2(position));
+//	if(bit == Faux)
+//		return c & ~(pow2(position));
+//	else
+//		return c | (pow2(position));
 
 //return 0 ; /* pour enlever un warning du compilateur */
 }
