@@ -35,11 +35,11 @@ unsigned int get_bits(struct bitstream *b, unsigned int nb)
 {
 	if(b != NULL)
 	{
-		unsigned result = 0; 
+		unsigned long result = 0; 
 		unsigned int i; 
-		for(i=0; i<nb; ++i)
+		for(i=1; i<=nb; ++i)
 		{
-			result = pose_bit(result, i, get_bit(b));
+			result = pose_bit(result, nb-i, get_bit(b));
 		}
 		return result;
 	}
@@ -57,6 +57,30 @@ unsigned int get_bits(struct bitstream *b, unsigned int nb)
 
 void put_bit_string(struct bitstream *b, const char *bits)
 {
-
+	if(b != NULL)
+	{
+		//unsigned int t = TAILLE(bits);
+		unsigned int i = 0;
+		//printf("%s", bits);
+		//eprintf("%s\n", bits);
+		//eprintf("Whaaaat\n");
+		//for(i=0; i<t; ++i)
+		while(bits[i] != '\0')
+		{
+			if(bits[i] == '0')
+			{
+				put_bit(b, Faux);
+				//eprintf("0");
+			}
+			else
+			{
+				put_bit(b, Vrai);
+			}
+			++i;
+		}
+		//eprintf("\n");
+	}
+	else
+		exit(1);
 
 }
