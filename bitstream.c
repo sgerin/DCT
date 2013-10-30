@@ -60,37 +60,24 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 	//struct bitstream *bs = malloc(sizeof *bs); 
 	struct bitstream *bs;
 	ALLOUER(bs,1);
+	bs->ecriture = (mode[0] != 'r') ;
 	if(strcmp(fichier, "-") == 0)
 	{
-		if(strcmp(mode, "r") == 0 || strcmp(mode, "r+") == 0)
-		{
-			bs->fichier = stdin;
-			bs->ecriture = Faux;
-		}
-		else
-		{
+		if( bs->ecriture )
 			bs->fichier = stdout;
-			bs->ecriture = Vrai;
-		}
+		else
+			bs->fichier = stdin;
 	}
 	else
+		bs->fichier = fopen(fichier, mode);
+	
+	if(bs->fichier == NULL)
 	{
-			bs->fichier = fopen(fichier, mode);
-			if(bs->fichier == NULL)
-				EXCEPTION_LANCE(Exception_fichier_ouverture);
-			if(strcmp(mode, "r") == 0 || strcmp(mode, "r+") == 0)
-				bs->ecriture = Faux;
-			else
-				bs->ecriture = Vrai;
+		free(bs) ;
+		EXCEPTION_LANCE(Exception_fichier_ouverture);
 	}
-	
-	bs->buffer = 0;
 	bs->nb_bits_dans_buffer = 0;
-
 	return bs;
-	
-
-//return 0 ; /* pour enlever un warning du compilateur */
 }
 
 /*
@@ -110,19 +97,15 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 
 void flush_bitstream(struct bitstream *b)
 {
-	if(b != NULL)
+	assert(b != NULL);
+	if(b->ecriture == Vrai)
 	{
-		if(b->ecriture == Vrai)
+		if(b->nb_bits_dans_buffer > 0)
 		{
-			if(b->nb_bits_dans_buffer > 0)
-			{
-				//b->buffer = 0;
-				//printf("%d\n", b->buffer);
-				if(fputc(b->buffer, b->fichier) != b->buffer)
-					EXCEPTION_LANCE(Exception_fichier_ecriture);
-				b->nb_bits_dans_buffer = 0;
-				b->buffer = 0;
-			}
+			if(fputc(b->buffer, b->fichier) != b->buffer)
+				EXCEPTION_LANCE(Exception_fichier_ecriture);
+			b->nb_bits_dans_buffer = 0;
+			b->buffer = 0;
 		}
 	}
 }
@@ -137,25 +120,13 @@ void flush_bitstream(struct bitstream *b)
  */
 
 void close_bitstream(struct bitstream *b)
-{
-	//printf("passage close\n");
-	
-	if(b != NULL)
-	{
-		//if(b->nb_bits_dans_buffer != 0)
-		//{
-		//if(b->nb_bits_dans_buffer > 0)
-			//printf("8");
-		flush_bitstream(b);
-			//if(fprintf(b->fichier, "%hhx", b->buffer) < 0)
-			//	EXCEPTION_LANCE(2);
-			//b->nb_bits_dans_buffer = 0;
-		//}
-		if(fclose(b->fichier) != 0)
-			EXCEPTION_LANCE(Exception_fichier_fermeture);
-		free(b);
-		b = NULL;
-	}
+{	
+	assert(b != NULL);
+	flush_bitstream(b);
+	if(fclose(b->fichier) != 0)
+		EXCEPTION_LANCE(Exception_fichier_fermeture);
+	free(b);
+	//b = NULL;
 }
 
 /*
@@ -177,30 +148,16 @@ void close_bitstream(struct bitstream *b)
 
 void put_bit(struct bitstream *b, Booleen bit)
 {
-	if(b != NULL)
+	assert(b != NULL);
+	if(b->ecriture == Vrai)
 	{
-		if(b->ecriture == Vrai)
-		{
-			if(b->nb_bits_dans_buffer == NB_BITS)
-				flush_bitstream(b);
-			//{
-				//printf("%lu\n", NB_BITS);
-				//pose_bit(b->buffer, NB_BITS-1, bit);
-				//b->nb_bits_dans_buffer++;
-				//}
-			//else
-			//{
-				//printf("%lu\n", b->nb_bits_dans_buffer);
-				//printf("before %hhu %i %hhu\n", b->buffer, bit,  NB_BITS-1-b->nb_bits_dans_buffer);
-				//printf("result %hhu\n", pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit));
-				b->buffer = pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit);
-				b->nb_bits_dans_buffer++;
-				//printf("after %hhu %i %hhu\n", b->buffer, bit,  NB_BITS-1-b->nb_bits_dans_buffer);
-				//}
-		}
-		else
-			EXCEPTION_LANCE(Exception_fichier_ecriture_dans_fichier_ouvert_en_lecture);
+		if(b->nb_bits_dans_buffer == NB_BITS)
+			flush_bitstream(b);
+			b->buffer = pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit);
+			b->nb_bits_dans_buffer++;
 	}
+	else
+		EXCEPTION_LANCE(Exception_fichier_ecriture_dans_fichier_ouvert_en_lecture);
 }
 
 
@@ -240,8 +197,6 @@ Booleen get_bit(struct bitstream *b)
 					EXCEPTION_LANCE(Exception_fichier_lecture);
 				b->buffer = read_byte;
 				b->nb_bits_dans_buffer = NB_BITS;
-				//else
-				//	return prend_bit(read_byte,)
 			}
 			--b->nb_bits_dans_buffer;
 			return prend_bit(b->buffer, b->nb_bits_dans_buffer);
@@ -251,7 +206,7 @@ Booleen get_bit(struct bitstream *b)
 			EXCEPTION_LANCE(Exception_fichier_lecture_dans_fichier_ouvert_en_ecriture);
 		}
 	}	
-	return 0 ; /* pour enlever un warning du compilateur */
+	return 0 ; 
 }
 
 /*
