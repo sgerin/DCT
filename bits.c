@@ -13,15 +13,12 @@ void put_bits(struct bitstream *b, unsigned int nb, unsigned long v)
 	if(b != NULL)
 	{
 		unsigned int i; 
-		//nb_bits_utile
-		//unsigned int nb_bits_utile(unsigned long v)
 		for(i=nb; i>0; --i)
 		{
 			put_bit(b, prend_bit(v, i-1));
 		}
 	}
 }
-
 
 /*
  * Lecture de "nb" bits venant du fichier.
@@ -59,18 +56,12 @@ void put_bit_string(struct bitstream *b, const char *bits)
 {
 	if(b != NULL)
 	{
-		//unsigned int t = TAILLE(bits);
 		unsigned int i = 0;
-		//printf("%s", bits);
-		//eprintf("%s\n", bits);
-		//eprintf("Whaaaat\n");
-		//for(i=0; i<t; ++i)
 		while(bits[i] != '\0')
 		{
 			if(bits[i] == '0')
 			{
 				put_bit(b, Faux);
-				//eprintf("0");
 			}
 			else
 			{
@@ -78,7 +69,6 @@ void put_bit_string(struct bitstream *b, const char *bits)
 			}
 			++i;
 		}
-		//eprintf("\n");
 	}
 	else
 		exit(1);

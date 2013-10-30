@@ -42,28 +42,127 @@ static char *prefixes[] = { "00", "010", "011", "1000", "1001", "1010", "1011",
 void put_entier(struct bitstream *b, unsigned int f)
 {
 	unsigned int nb_utile = nb_bits_utile(f);
-	//eprintf("%d", nb_utile);
 	if(nb_utile > 15)
 	{
 		exit(1);
 	}
 	else	
 	{
-		//char* prefix = ;
 		put_bit_string(b, prefixes[nb_utile]);
 		if(f > 1)
 			put_bits(b, nb_utile-1, f);
 	}
-	
+}
 
 
-
-
-
-
-
-
-
+unsigned int get_prefixe(struct bitstream *b)
+{
+	if(get_bit(b)) //1
+	{
+		if(get_bit(b)) //11
+		{
+			if(get_bit(b)) //111
+			{
+				if(get_bit(b)) //1111
+				{
+					if(get_bit(b)) //11111
+					{
+						if(get_bit(b)) //111111
+						{
+							return 15;
+						}
+						else
+						{
+							return 14;
+						}
+					}
+					else //11110
+					{
+						return 13;
+					}
+				}
+				else //1110
+				{
+					if(get_bit(b)) //11101
+					{
+						return 12;
+					}
+					else //11100
+					{
+						return 11;
+					}
+				}
+			}
+			else //110
+			{
+				if(get_bit(b)) //1101
+				{
+					if(get_bit(b)) //11011
+					{
+						return 10;
+					}
+					else //11010
+					{
+						return 9;
+					}
+				}
+				else //1100
+				{
+					if(get_bit(b)) //11001
+					{
+						return 8;
+					}
+					else //11000
+					{
+						return 7;
+					}
+				}
+			}
+		}
+		else //10
+		{
+			if(get_bit(b)) //101
+			{
+				if(get_bit(b)) //1011
+				{
+					return 6;
+				}
+				else //1010
+				{
+					return 5;
+				}
+			}
+			else //100
+			{
+				if(get_bit(b)) //1001
+				{
+					return 4;
+				}
+				else //1000
+				{
+					return 3;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(get_bit(b))
+		{
+			if(get_bit(b))
+			{
+				return 2; 
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		else
+		{
+			return 0; 
+		}
+	}
 }
 
 /*
@@ -78,37 +177,19 @@ void put_entier(struct bitstream *b, unsigned int f)
 unsigned int get_entier(struct bitstream *b)
 {
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-return 0 ; /* pour enlever un warning du compilateur */
+	//utiliser arbre car prefix + bout de suffixe sera tjrs different d'un prefixe plus grand; 
+	unsigned int prefixe = get_prefixe(b);
+	unsigned result = 0; 
+	if(prefixe > 1)
+	{
+		result = get_bits(b, prefixe-1);
+		result = pose_bit(result, prefixe-1, 1);
+		return result;
+	}
+	else
+	{	
+		return prefixe;
+	}
 }
 
 /*
@@ -128,25 +209,25 @@ return 0 ; /* pour enlever un warning du compilateur */
 
 void put_entier_signe(struct bitstream *b, int i)
 {
-
-
-
-
-
-
-
-
-
-
+	if(i < 0)
+	{
+		put_bit(b, Vrai);
+		i = -i--;
+	}
+	else
+		put_bit(b, Faux);
+	put_entier(b, i);
 }
 /*
  *
  */
 int get_entier_signe(struct bitstream *b)
 {
-
-
-
-
-return 0 ; /* pour enlever un warning du compilateur */
+	int signe = 1;
+	if(get_bit(b) == Vrai)
+		signe = -1;
+	unsigned int entier = get_entier(b);
+	if(signe == -1)
+		entier++;
+	return signe*entier;
 }
