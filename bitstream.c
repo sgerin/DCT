@@ -97,7 +97,7 @@ struct bitstream *open_bitstream(const char *fichier, const char* mode)
 
 void flush_bitstream(struct bitstream *b)
 {
-	assert(b != NULL);
+	assert(b);
 	if(b->ecriture == Vrai)
 	{
 		if(b->nb_bits_dans_buffer > 0)
@@ -121,12 +121,11 @@ void flush_bitstream(struct bitstream *b)
 
 void close_bitstream(struct bitstream *b)
 {	
-	assert(b != NULL);
+	assert(b);
 	flush_bitstream(b);
 	if(fclose(b->fichier) != 0)
 		EXCEPTION_LANCE(Exception_fichier_fermeture);
 	free(b);
-	//b = NULL;
 }
 
 /*
@@ -148,13 +147,13 @@ void close_bitstream(struct bitstream *b)
 
 void put_bit(struct bitstream *b, Booleen bit)
 {
-	assert(b != NULL);
-	if(b->ecriture == Vrai)
+	assert(b);
+	if(b->ecriture)
 	{
 		if(b->nb_bits_dans_buffer == NB_BITS)
 			flush_bitstream(b);
-			b->buffer = pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit);
-			b->nb_bits_dans_buffer++;
+		b->buffer = pose_bit(b->buffer, NB_BITS-1-b->nb_bits_dans_buffer, bit);
+		b->nb_bits_dans_buffer++;
 	}
 	else
 		EXCEPTION_LANCE(Exception_fichier_ecriture_dans_fichier_ouvert_en_lecture);
@@ -186,27 +185,19 @@ void put_bit(struct bitstream *b, Booleen bit)
 
 Booleen get_bit(struct bitstream *b)
 {
-	if(b != NULL)
+	assert(b);
+	if(b->ecriture)
+		EXCEPTION_LANCE(Exception_fichier_lecture_dans_fichier_ouvert_en_ecriture);
+	if(!b->nb_bits_dans_buffer)
 	{
-		if(b->ecriture == Faux)
-		{
-			if(b->nb_bits_dans_buffer == 0)
-			{
-				int read_byte = fgetc(b->fichier);
-				if(read_byte == EOF)
-					EXCEPTION_LANCE(Exception_fichier_lecture);
-				b->buffer = read_byte;
-				b->nb_bits_dans_buffer = NB_BITS;
-			}
-			--b->nb_bits_dans_buffer;
-			return prend_bit(b->buffer, b->nb_bits_dans_buffer);
-		}
-		else	
-		{
-			EXCEPTION_LANCE(Exception_fichier_lecture_dans_fichier_ouvert_en_ecriture);
-		}
-	}	
-	return 0 ; 
+		int read_byte = fgetc(b->fichier);
+		if(read_byte == EOF)
+			EXCEPTION_LANCE(Exception_fichier_lecture);
+		b->buffer = read_byte;
+		b->nb_bits_dans_buffer = NB_BITS;
+	}
+	--b->nb_bits_dans_buffer;
+	return prend_bit(b->buffer, b->nb_bits_dans_buffer);
 }
 
 /*

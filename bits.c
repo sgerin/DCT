@@ -10,14 +10,10 @@
 
 void put_bits(struct bitstream *b, unsigned int nb, unsigned long v)
 {
-	if(b != NULL)
-	{
-		unsigned int i; 
-		for(i=nb; i>0; --i)
-		{
-			put_bit(b, prend_bit(v, i-1));
-		}
-	}
+	assert(b);
+	unsigned int i; 
+	for(i=nb; i>0; --i)
+		put_bit(b, prend_bit(v, i-1));
 }
 
 /*
@@ -30,18 +26,13 @@ void put_bits(struct bitstream *b, unsigned int nb, unsigned long v)
 
 unsigned int get_bits(struct bitstream *b, unsigned int nb)
 {
-	if(b != NULL)
-	{
-		unsigned long result = 0; 
-		unsigned int i; 
-		for(i=1; i<=nb; ++i)
-		{
-			result = pose_bit(result, nb-i, get_bit(b));
-		}
-		return result;
-	}
-	else
-		return 0 ; /* pour enlever un warning du compilateur */
+	assert(b);
+
+	unsigned long result = 0; 
+	unsigned int i; 
+	for(i=1; i<=nb; ++i)
+		result = pose_bit(result, nb-i, get_bit(b));
+	return result;
 }
 
 /*
@@ -54,23 +45,17 @@ unsigned int get_bits(struct bitstream *b, unsigned int nb)
 
 void put_bit_string(struct bitstream *b, const char *bits)
 {
-	if(b != NULL)
+	assert(b);
+
+	unsigned int i = 0;
+	while(bits[i] != '\0')
 	{
-		unsigned int i = 0;
-		while(bits[i] != '\0')
-		{
-			if(bits[i] == '0')
-			{
-				put_bit(b, Faux);
-			}
-			else
-			{
-				put_bit(b, Vrai);
-			}
-			++i;
-		}
+		if(bits[i] == '0')
+			put_bit(b, Faux);
+		else
+			put_bit(b, Vrai);
+		++i;
 	}
-	else
-		exit(1);
+
 
 }

@@ -66,102 +66,35 @@ unsigned int get_prefixe(struct bitstream *b)
 				if(get_bit(b)) //1111
 				{
 					if(get_bit(b)) //11111
-					{
-						if(get_bit(b)) //111111
-						{
-							return 15;
-						}
-						else
-						{
-							return 14;
-						}
-					}
+						return 14+get_bit(b);
 					else //11110
-					{
 						return 13;
-					}
 				}
 				else //1110
-				{
-					if(get_bit(b)) //11101
-					{
-						return 12;
-					}
-					else //11100
-					{
-						return 11;
-					}
-				}
+					return 11+get_bit(b);
 			}
 			else //110
 			{
 				if(get_bit(b)) //1101
-				{
-					if(get_bit(b)) //11011
-					{
-						return 10;
-					}
-					else //11010
-					{
-						return 9;
-					}
-				}
+					return 9+get_bit(b);
 				else //1100
-				{
-					if(get_bit(b)) //11001
-					{
-						return 8;
-					}
-					else //11000
-					{
-						return 7;
-					}
-				}
+					return 7+get_bit(b);
 			}
 		}
 		else //10
 		{
 			if(get_bit(b)) //101
-			{
-				if(get_bit(b)) //1011
-				{
-					return 6;
-				}
-				else //1010
-				{
-					return 5;
-				}
-			}
+				return 5+get_bit(b);
 			else //100
-			{
-				if(get_bit(b)) //1001
-				{
-					return 4;
-				}
-				else //1000
-				{
-					return 3;
-				}
-			}
+				return 3+get_bit(b);
 		}
 	}
 	else
 	{
 		if(get_bit(b))
-		{
-			if(get_bit(b))
-			{
-				return 2; 
-			}
-			else
-			{
-				return 1;
-			}
-		}
+			return 1+get_bit(b);		
 		else
-		{
 			return 0; 
-		}
 	}
 }
 
@@ -179,7 +112,7 @@ unsigned int get_entier(struct bitstream *b)
 
 	//utiliser arbre car prefix + bout de suffixe sera tjrs different d'un prefixe plus grand; 
 	unsigned int prefixe = get_prefixe(b);
-	unsigned result = 0; 
+	unsigned result; 
 	if(prefixe > 1)
 	{
 		result = get_bits(b, prefixe-1);
@@ -187,9 +120,7 @@ unsigned int get_entier(struct bitstream *b)
 		return result;
 	}
 	else
-	{	
 		return prefixe;
-	}
 }
 
 /*
