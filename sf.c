@@ -193,7 +193,7 @@ void put_entier_shannon_fano(struct bitstream *bs
  */
 static int decode_position(struct bitstream *bs,struct shannon_fano *sf)
 {
-	int position_min = 0;
+	/*int position_min = 0;
 	int position_max = sf->nb_evenements;
 	int sep = -1; 
 	while(sep != trouve_separation(sf, position_min, position_max))
@@ -204,7 +204,21 @@ static int decode_position(struct bitstream *bs,struct shannon_fano *sf)
 		else
 			position_min = sep;
 	}
-	return sep;
+	return sep;*/
+	    int min = 0;
+	    int max = sf->nb_evenements-1;
+
+	    while(max > min) {
+	        int separation = trouve_separation(sf,min,max);
+	        Booleen bit = get_bit(bs);
+	        if(!bit){
+	            max = separation;
+	        }
+	        else {
+	            min = separation+1;
+	        }
+	    }
+	    return max;
 }
 
 /*
