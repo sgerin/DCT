@@ -236,8 +236,8 @@ int get_entier_shannon_fano(struct bitstream *bs, struct shannon_fano *sf)
 	{
 		evenement = get_bits(bs,sizeof(int)*8);
         sf->evenements[sf->nb_evenements].valeur = evenement;
-        sf->evenements[sf->nb_evenements].nb_occurrences = 1;
-		sf->nb_evenements++;
+        sf->evenements[sf->nb_evenements++].nb_occurrences = 1;
+		//sf->nb_evenements++;
 	}
 
 	incremente_et_ordonne(sf,position);
