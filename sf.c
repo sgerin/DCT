@@ -152,69 +152,6 @@ static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 			put_bit(bs, 1);
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-unsigned int min = 0; 
-	unsigned int max = sf->nb_evenements;
-	unsigned int sep = sf->nb_evenements;
-	while()
-	{	
-		if(position > sep)
-		{
-			min = sep;
-			sep = trouve_separation(sf,min, max);
-		}
-		else if(position < sep)
-		{
-			max = sep;
-			sep = trouve_separation(sf, min, max);
-		}
-		else
-			put_entier_signe(bs, sf->evenement)
-	}
-	//while(position > trouve_separation(sf,)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 /*
