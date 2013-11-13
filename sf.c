@@ -89,24 +89,6 @@ static int trouve_separation(const struct shannon_fano *sf
 			     , int position_min
 			     , int position_max)
 {
-	/*unsigned int sum_inf = 0;
-	unsigned int sum_sup = 0;
-	//unsigned int pos_min = position_min; 
-	//unsigned int pos_max = position_max;
-	unsigned int i; 
-	for(i=position_min; i<=position_max; ++i)
-	{
-		sum_sup += sf->evenements[i].nb_occurrences;
-	}
-	
-	for(i=position_min; i<=position_max; ++i)
-	{
-		sum_sup -= sf->evenements[i].nb_occurrences;
-		sum_inf += sf->evenements[i].nb_occurrences;
-		if(sum_inf > sum_pos)
-			return i-1;
-	}*/
-
 	unsigned int sum_inf = 0;
 	unsigned int sum_sup = 0;	
 
