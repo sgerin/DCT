@@ -220,7 +220,7 @@ int get_entier_shannon_fano(struct bitstream *bs, struct shannon_fano *sf)
 	
 	if(evenement == VALEUR_ESCAPE)
 	{
-		evenement = get_bits(bs,sizeof(int)*8,evenement);
+		evenement = get_bits(bs,sizeof(int)*8);
         sf->evenements[sf->nb_evenements].valeur = evenement;
         sf->evenements[sf->nb_evenements].nb_occurrences = 1;
 		sf->nb_evenements++;
