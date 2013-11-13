@@ -148,18 +148,19 @@ static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 static void incremente_et_ordonne(struct shannon_fano *sf, int position)
 {
 	//unsigned int nb_occurences = sf->evenements[position].nb_occurences;
-	sf->evenements[position].nb_occurences++;
+	sf->evenements[position].nb_occurrences++;
 	if(position > 0)
 	{
 		int position_swap = position;
+		int i;
 		for(int i = position-1; i>=0; i--)
 		{
-			if(sf->evenements[i].nb_occurences < sf->evenements[position].nb_occurences)
+			if(sf->evenements[i].nb_occurrences < sf->evenements[position].nb_occurrences)
 				position_swap = i;
 		}
 		if(position_swap != position)
 		{
-			evenement tmp = sf->evenements[position-1];
+			struct evenement tmp = sf->evenements[position-1];
 			sf->evenements[position-1] = sf->evenements[position]; 
 			sf->evenements[position] = tmp;
 		}
