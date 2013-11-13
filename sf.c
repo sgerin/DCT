@@ -144,12 +144,12 @@ static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 		if (sep > position)
 		{
 			position_max = sep;
-			put_bit(bs, FAUX);
+			put_bit(bs, 0);
 		}
 		else
 		{
 			position_min = sep;
-			put_bit(bs, VRAI);
+			put_bit(bs, 1);
 		}
 	}
 
