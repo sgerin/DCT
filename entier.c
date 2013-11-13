@@ -42,10 +42,8 @@ static char *prefixes[] = { "00", "010", "011", "1000", "1001", "1010", "1011",
 void put_entier(struct bitstream *b, unsigned int f)
 {
 	unsigned int nb_utile = nb_bits_utile(f);
-	if(nb_utile > 15)
-	{
+	if(nb_utile > TAILLE(prefixes))
 		exit(1);
-	}
 	else	
 	{
 		put_bit_string(b, prefixes[nb_utile]);
@@ -140,13 +138,9 @@ unsigned int get_entier(struct bitstream *b)
 
 void put_entier_signe(struct bitstream *b, int i)
 {
+	put_bit(b, i<0);
 	if(i < 0)
-	{
-		put_bit(b, Vrai);
 		i = -i--;
-	}
-	else
-		put_bit(b, Faux);
 	put_entier(b, i);
 }
 /*
@@ -154,11 +148,8 @@ void put_entier_signe(struct bitstream *b, int i)
  */
 int get_entier_signe(struct bitstream *b)
 {
-	int signe = 1;
-	if(get_bit(b) == Vrai)
-		signe = -1;
-	unsigned int entier = get_entier(b);
-	if(signe == -1)
-		entier++;
-	return signe*entier;
+	if(get_bit(b))
+		return -get_entier(b) - 1;
+	else
+		return get_entier(b);
 }

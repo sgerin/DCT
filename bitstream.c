@@ -105,7 +105,7 @@ void flush_bitstream(struct bitstream *b)
 			if(fputc(b->buffer, b->fichier) != b->buffer)
 				EXCEPTION_LANCE(Exception_fichier_ecriture);
 			b->nb_bits_dans_buffer = 0;
-			b->buffer = 0;
+			//b->buffer = 0;
 		}
 	}
 }
@@ -196,7 +196,7 @@ Booleen get_bit(struct bitstream *b)
 		b->buffer = read_byte;
 		b->nb_bits_dans_buffer = NB_BITS;
 	}
-	--b->nb_bits_dans_buffer;
+	b->nb_bits_dans_buffer--;
 	return prend_bit(b->buffer, b->nb_bits_dans_buffer);
 }
 

@@ -56,7 +56,7 @@ void close_shannon_fano(struct shannon_fano *sf)
 static int trouve_position(const struct shannon_fano *sf, int evenement)
 {
 	unsigned int i; 
-	unsigned int escape = 0;
+	unsigned int escape;
 	for(i=0; i<sf->nb_evenements; ++i)
 	{
 		if(sf->evenements[i].valeur == evenement)
@@ -66,10 +66,6 @@ static int trouve_position(const struct shannon_fano *sf, int evenement)
 	}
 	return escape;
 	
-
-
-
-
 
 //return 0 ; /* pour enlever un warning du compilateur */
 }
@@ -110,21 +106,24 @@ static int trouve_separation(const struct shannon_fano *sf
 		if(sum_inf > sum_pos)
 			return i-1;
 	}*/
-	
-	/*while(pos_min <= pos_max)
+
+	unsigned int sum_inf = 0;
+	unsigned int sum_sup = 0;	
+
+	while(position_min <= position_max)
 	{
 		if(sum_inf < sum_sup)
 		{
-			sum_inf += sf->evenements[pos_min].nb_occurrences;
-			++pos_min; 
+			sum_inf += sf->evenements[position_min].nb_occurrences;
+			++position_min; 
 		}
 		else
 		{
-			sum_sup += sf->evenements[pos_min].nb_occurrences;
-			--pos_max; 
+			sum_sup += sf->evenements[position_max].nb_occurrences;
+			--position_max; 
 		}
 	}
-	return pos_max;*/
+	return position_max;
 
 }
 
@@ -137,10 +136,45 @@ static int trouve_separation(const struct shannon_fano *sf
 static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 		     int position)
 {
-	/*unsigned int min = 0; 
+	int position_min = 0;
+	int position_max = sf->nb_evenements;
+	int sep = -1; 
+	while(sep != trouve_separation(sf, position_min, position_max))
+	{
+		if ()
+			trove_separation(sf, sep, position_max);
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+unsigned int min = 0; 
 	unsigned int max = sf->nb_evenements;
 	unsigned int sep = sf->nb_evenements;
-	while(1)
+	while()
 	{	
 		if(position > sep)
 		{
@@ -154,7 +188,7 @@ static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 		}
 		else
 			put_entier_signe(bs, sf->evenement)
-	}*/
+	}
 	//while(position > trouve_separation(sf,)
 
 

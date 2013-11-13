@@ -12,7 +12,7 @@ void put_bits(struct bitstream *b, unsigned int nb, unsigned long v)
 {
 	assert(b);
 	unsigned int i; 
-	for(i=nb; i>0; --i)
+	for(i=nb; i>0; i--)
 		put_bit(b, prend_bit(v, i-1));
 }
 
@@ -30,7 +30,7 @@ unsigned int get_bits(struct bitstream *b, unsigned int nb)
 
 	unsigned long result = 0; 
 	unsigned int i; 
-	for(i=1; i<=nb; ++i)
+	for(i=1; i<=nb; i++)
 		result = pose_bit(result, nb-i, get_bit(b));
 	return result;
 }
@@ -50,11 +50,13 @@ void put_bit_string(struct bitstream *b, const char *bits)
 	unsigned int i = 0;
 	while(bits[i] != '\0')
 	{
-		if(bits[i] == '0')
+		/*if(bits[i] == '0')
 			put_bit(b, Faux);
 		else
 			put_bit(b, Vrai);
-		++i;
+		*/
+		put_bit(b, bits[i] != '0');
+		i++;
 	}
 
 
