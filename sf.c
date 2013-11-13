@@ -147,23 +147,23 @@ static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 
 static void incremente_et_ordonne(struct shannon_fano *sf, int position)
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	//unsigned int nb_occurences = sf->evenements[position].nb_occurences;
+	sf->evenements[position].nb_occurences++;
+	if(position > 0)
+	{
+		int position_swap = position;
+		for(int i = position-1; i>=0; i--)
+		{
+			if(sf->evenements[i].nb_occurences < sf->evenements[position].nb_occurences)
+				position_swap = i;
+		}
+		if(position_swap != position)
+		{
+			evenement tmp = sf->evenements[position-1];
+			sf->evenements[position-1] = sf->evenements[position]; 
+			sf->evenements[position] = tmp;
+		}
+	}
 }
 
 /*
@@ -175,8 +175,13 @@ static void incremente_et_ordonne(struct shannon_fano *sf, int position)
 void put_entier_shannon_fano(struct bitstream *bs
 			     ,struct shannon_fano *sf, int evenement)
 {
-	
-
+	int position = trouve_position(sf, evenement);
+	encode_position(bs, sf, position);
+	if(sf->evenements[position].valeur == VALEUR_ESCAPE)
+	{
+		
+	}
+	incremente_et_ordonne(sf, position);
 
 
 
