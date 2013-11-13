@@ -227,18 +227,7 @@ int get_entier_shannon_fano(struct bitstream *bs, struct shannon_fano *sf)
 	}
 
 	incremente_et_ordonne(sf,position);
-
-
-
-
-
-
-
-
-
-
-
-
+	return evenement;
 }
 
 /*
