@@ -186,17 +186,6 @@ void put_entier_shannon_fano(struct bitstream *bs
 		sf->nb_evenements++;
 	}
 	incremente_et_ordonne(sf, position);
-
-
-
-
-
-
-
-
-
-
-
 }
 
 /*
@@ -204,21 +193,23 @@ void put_entier_shannon_fano(struct bitstream *bs
  */
 static int decode_position(struct bitstream *bs,struct shannon_fano *sf)
 {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	int position_min = 0;
+	int position_max = sf->nb_evenements;
+	int sep = -1; 
+	while(sep != trouve_separation(sf, position_min, position_max))
+	{
+		if (sep > position)
+		{
+			position_max = sep;
+			//put_bit(bs, 0);
+		}
+		else
+		{
+			position_min = sep;
+			//put_bit(bs, 1);
+		}
+	}
+	return position_max;
 
 
 
