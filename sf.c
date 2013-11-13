@@ -180,7 +180,9 @@ void put_entier_shannon_fano(struct bitstream *bs
 	encode_position(bs, sf, position);
 	if(sf->evenements[position].valeur == VALEUR_ESCAPE)
 	{
-		
+        put_bits(bs,sizeof(int)*8,evenement);
+        sf->evenements[sf->nb_evenements].valeur = evenement;
+        sf->evenements[sf->nb_evenements++].nb_occurrences = 1;
 	}
 	incremente_et_ordonne(sf, position);
 
