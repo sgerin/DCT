@@ -198,7 +198,8 @@ static int decode_position(struct bitstream *bs,struct shannon_fano *sf)
 	int sep = -1; 
 	while(sep != trouve_separation(sf, position_min, position_max))
 	{
-		if (sep > position)
+		Booleen b = get_bit(bs);
+		if (b == 0)
 		{
 			position_max = sep;
 			//put_bit(bs, 0);
