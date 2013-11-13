@@ -141,9 +141,16 @@ static void encode_position(struct bitstream *bs,struct shannon_fano *sf,
 	int sep = -1; 
 	while(sep != trouve_separation(sf, position_min, position_max))
 	{
-		if ()
-			trove_separation(sf, sep, position_max);
-
+		if (sep > position)
+		{
+			position_max = sep;
+			put_bit(bs, FAUX);
+		}
+		else
+		{
+			position_min = sep;
+			put_bit(bs, VRAI);
+		}
 	}
 
 
