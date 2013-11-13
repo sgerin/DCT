@@ -200,17 +200,11 @@ static int decode_position(struct bitstream *bs,struct shannon_fano *sf)
 	{
 		Booleen b = get_bit(bs);
 		if (b == 0)
-		{
 			position_max = sep;
-			//put_bit(bs, 0);
-		}
 		else
-		{
 			position_min = sep;
-			//put_bit(bs, 1);
-		}
 	}
-	return position_max;
+	return sep;
 
 
 
