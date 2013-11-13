@@ -153,7 +153,7 @@ static void incremente_et_ordonne(struct shannon_fano *sf, int position)
 	{
 		int position_swap = position;
 		int i;
-		for(int i = position-1; i>=0; i--)
+		for(i=position-1; i>=0; i--)
 		{
 			if(sf->evenements[i].nb_occurrences < sf->evenements[position].nb_occurrences)
 				position_swap = i;
